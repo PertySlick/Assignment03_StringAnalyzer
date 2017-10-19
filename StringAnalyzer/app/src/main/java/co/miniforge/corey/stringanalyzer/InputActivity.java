@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import edu.roush.validator.Validator;
 
 public class InputActivity extends AppCompatActivity {
     public static String intentTag = "inputData";
 
     EditText input;
     Button submit;
+    Validator v = new Validator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +36,16 @@ public class InputActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AnalyzerActivity.class);
-                intent.putExtra(intentTag, input.getText().toString());
-                startActivity(intent);
+                if (v.hasStringInput(input)) {
+                    Intent intent = new Intent(getApplicationContext(), AnalyzerActivity.class);
+                    intent.putExtra(intentTag, input.getText().toString());
+                    startActivity(intent);
+                } else {
+                    input.setText("");
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.input_error_empty_message),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
